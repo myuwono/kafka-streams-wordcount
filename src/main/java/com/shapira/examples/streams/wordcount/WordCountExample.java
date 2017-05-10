@@ -11,16 +11,21 @@ import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.KStreamBuilder;
 
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
 public class WordCountExample {
+    private static final String KAFKA_BROKERS = "KAFKA_BROKERS";
 
     public static void main(String[] args) throws Exception{
-
+        String brokers = Optional
+                .ofNullable(System.getenv(KAFKA_BROKERS))
+                .orElseThrow(() -> new IllegalArgumentException(
+                        KAFKA_BROKERS + " environment variable must be set"));
         Properties props = new Properties();
         props.put(StreamsConfig.APPLICATION_ID_CONFIG, "wordcount");
-        props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+        props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, brokers);
         props.put(StreamsConfig.KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
         props.put(StreamsConfig.VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
 
