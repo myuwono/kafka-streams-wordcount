@@ -59,9 +59,6 @@ public class WordCountExample {
                 .toStream();
         counts.to(OUTPUT_TOPIC);
 
-        builder.<String, String>stream(OUTPUT_TOPIC)
-                .foreach((key, value) -> log.info("{}: {}", key, value));
-
         KafkaStreams streams = new KafkaStreams(builder, props);
 
         // This is for reset to work. Don't use in production - it causes the app to re-load the state from Kafka on every start
@@ -71,7 +68,7 @@ public class WordCountExample {
 
         // usually the stream application would be running forever,
         // in this example we just let it run for some time and stop since the input data is finite.
-        Thread.sleep(5000L);
+        Thread.sleep(60000L);
 
         streams.close();
     }
