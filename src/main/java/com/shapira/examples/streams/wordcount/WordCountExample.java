@@ -8,6 +8,8 @@ import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.KStreamBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.Properties;
@@ -23,6 +25,8 @@ public class WordCountExample {
     private static final String BROKERS = getEnvOrElseThrowException(KAFKA_BROKERS);
     private static final String INPUT_TOPIC = getEnvOrElseThrowException(INPUT_TOPIC_ENV);
     private static final String OUTPUT_TOPIC = getEnvOrElseThrowException(OUTPUT_TOPIC_ENV);
+
+    private static final Logger log = LoggerFactory.getLogger(WordCountExample.class);
 
     public static void main(String[] args) throws Exception{
         Properties props = new Properties();
@@ -54,6 +58,9 @@ public class WordCountExample {
                 .mapValues(value->Long.toString(value))
                 .toStream((k, v) -> k + ": " + v);
         counts.to(OUTPUT_TOPIC);
+
+        builder.<String, String>stream(OUTPUT_TOPIC)
+                .foreach((key, value) -> log.info("{}: {}", key, value));
 
         KafkaStreams streams = new KafkaStreams(builder, props);
 
