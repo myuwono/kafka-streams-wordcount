@@ -56,7 +56,7 @@ public class WordCountExample {
                 .groupByKey()
                 .count("CountStore")
                 .mapValues(value->Long.toString(value))
-                .toStream((k, v) -> k + ": " + v);
+                .toStream();
         counts.to(OUTPUT_TOPIC);
 
         builder.<String, String>stream(OUTPUT_TOPIC)
