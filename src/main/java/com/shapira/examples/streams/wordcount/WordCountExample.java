@@ -10,7 +10,6 @@ import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.KStreamBuilder;
 
 import java.util.Arrays;
-import java.util.Optional;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
@@ -48,10 +47,12 @@ public class WordCountExample {
 
         final Pattern pattern = Pattern.compile("\\W+");
         KStream counts  = source.flatMapValues(value-> Arrays.asList(pattern.split(value.toLowerCase())))
-                .map((key, value) -> new KeyValue<Object, Object>(value, value))
+                .map((key, value) -> new KeyValue<String, String>(value, value))
                 .filter((key, value) -> (!value.equals("the")))
                 .groupByKey()
-                .count("CountStore").mapValues(value->Long.toString(value)).toStream();
+                .count("CountStore")
+                .mapValues(value->Long.toString(value))
+                .toStream((k, v) -> k + ": " + v);
         counts.to(OUTPUT_TOPIC);
 
         KafkaStreams streams = new KafkaStreams(builder, props);
