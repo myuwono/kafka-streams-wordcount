@@ -51,7 +51,7 @@ public class WordCountExample {
 
         final Pattern pattern = Pattern.compile("\\W+");
         KStream counts  = source.flatMapValues(value-> Arrays.asList(pattern.split(value.toLowerCase())))
-                .map((key, value) -> new KeyValue<String, String>(value, value))
+                .map((key, value) -> new KeyValue<>(value, value))
                 .filter((key, value) -> (!value.equals("the")))
                 .groupByKey()
                 .count("CountStore")
@@ -71,8 +71,6 @@ public class WordCountExample {
 
         // usually the stream application would be running forever,
         // in this example we just let it run for some time and stop since the input data is finite.
-        Thread.sleep(60000L);
-
-        streams.close();
+        Runtime.getRuntime().addShutdownHook(new Thread(streams::close));
     }
 }
