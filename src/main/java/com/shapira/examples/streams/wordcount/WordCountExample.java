@@ -55,7 +55,7 @@ public class WordCountExample {
                 .map((key, value) -> new KeyValue<>(value, value))
                 .filter((key, value) -> (!value.equals("the")))
                 .groupByKey()
-                .count("CountStore")
+                .count("ReplicatedCountStore")
                 .mapValues(value->Long.toString(value))
                 .toStream();
         counts.to(OUTPUT_TOPIC);
