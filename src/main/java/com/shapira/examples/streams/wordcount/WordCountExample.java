@@ -34,6 +34,7 @@ public class WordCountExample {
         props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, BROKERS);
         props.put(StreamsConfig.KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
         props.put(StreamsConfig.VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
+        props.put(StreamsConfig.REPLICATION_FACTOR_CONFIG, 3);
 
         // setting offset reset to earliest so that we can re-run the demo code with the same pre-loaded data
         // Note: To re-run the demo, you need to use the offset reset tool:
